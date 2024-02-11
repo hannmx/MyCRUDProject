@@ -21,4 +21,25 @@ public class UserService {
     public User saveUser(User user){
         return userRepository.save(user);
     }
+
+    public void deleteById(int id) {
+        userRepository.deleteById(id);
+    }
+
+    public User update(User user) {
+        // Проверяем, существует ли пользователь с таким идентификатором
+        if (userRepository.existsById(user.getId())) {
+            // Если пользователь существует, то сохраняем обновленные данные
+            return userRepository.save(user);
+        } else {
+            // Если пользователь не существует
+            return null;
+        }
+    }
+
+    public User getOne(int id) {
+        // Ищем пользователя по его идентификатору
+        return userRepository.findById(id);
+    }
+
 }

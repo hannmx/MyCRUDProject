@@ -12,6 +12,7 @@ public class UserRepository {
 
     private final JdbcTemplate jdbc;
 
+
     public UserRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
@@ -34,4 +35,29 @@ public class UserRepository {
         jdbc.update(sql, user.getFirstName(), user.getLastName());
         return user;
     }
+
+    public void deleteById(int id) {
+        String sql = "DELETE FROM userTable WHERE id=?";
+        jdbc.update(sql, id);
+    }
+
+    // Метод для проверки существования пользователя по его идентификатору
+    public boolean existsById(int id) {
+        String sql = "SELECT COUNT(*) FROM userTable WHERE id = ?";
+        Integer count = jdbc.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
+    }
+
+    // Метод для получения пользователя по его идентификатору
+    public User findById(int id) {
+        String sql = "SELECT * FROM userTable WHERE id = ?";
+        return jdbc.queryForObject(sql, (rs, rowNum) -> {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setFirstName(rs.getString("firstName"));
+            user.setLastName(rs.getString("lastName"));
+            return user;
+        }, id);
+    }
+
 }
